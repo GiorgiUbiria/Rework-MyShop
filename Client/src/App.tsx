@@ -15,6 +15,7 @@ import Home from "./pages/Home";
 import Books from "./pages/Books";
 import ErrorPage from "./pages/ErrorPage";
 import AddBook from "./pages/AddBook";
+import Book from "./pages/Book";
 
 const rootRoute = new RootRoute({
   component: () => {
@@ -63,7 +64,19 @@ const indexRoute = new Route({
 const booksRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "books",
+});
+
+const booksIndexRoute = new Route({
+  getParentRoute: () => booksRoute,
+  path: "/",
   component: Books,
+  errorComponent: ErrorPage,
+});
+
+const bookRoute = new Route({
+  getParentRoute: () => booksRoute,
+  path: "$bookId",
+  component: Book,
   errorComponent: ErrorPage,
 });
 
@@ -74,7 +87,11 @@ const addBookRoute = new Route({
   errorComponent: ErrorPage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, booksRoute, addBookRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  booksRoute.addChildren([booksIndexRoute, bookRoute]),
+  addBookRoute,
+]);
 
 const router = new Router({
   routeTree,
@@ -91,11 +108,9 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 

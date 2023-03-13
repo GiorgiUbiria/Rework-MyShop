@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BookStoreApi.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace BookStoreApi.Controllers
 {
@@ -20,7 +21,6 @@ namespace BookStoreApi.Controllers
             _context = context;
         }
 
-        // GET: api/Books
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
@@ -31,7 +31,6 @@ namespace BookStoreApi.Controllers
             return await _context.Books.ToListAsync();
         }
 
-        // GET: api/Books/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(long id)
         {
@@ -49,17 +48,26 @@ namespace BookStoreApi.Controllers
             return book;
         }
 
-        // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(long id, Book book)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchBook(long id, [FromBody] JsonPatchDocument<Book> patchDoc)
         {
-            if (id != book.Id)
+            if (patchDoc == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(book).State = EntityState.Modified;
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            patchDoc.ApplyTo(book, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             try
             {
@@ -80,8 +88,7 @@ namespace BookStoreApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         public async Task<ActionResult<Book>> PostBook([FromBody] Book book)
         {
@@ -111,7 +118,6 @@ namespace BookStoreApi.Controllers
             return CreatedAtAction("GetBook", new { id = book.Id }, book);
         }
 
-        // DELETE: api/Books/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(long id)
         {

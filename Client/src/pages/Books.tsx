@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 
 const useBooks = () => {
   return useQuery({
@@ -19,30 +20,44 @@ const Books = () => {
     error;
   }
 
+  const navigate = useNavigate();
+
   return (
-    <>
-      <h1>Books</h1>
-      <div>
+    <div className="books_list w-full h-full flex flex-col gap-4">
+      <h1 className="text-center text-4xl">Books</h1>
+      <div className="flex flex-col">
         {status === "loading" ? (
           "Loading..."
         ) : status === "error" ? (
           <span>Error: {error.message} </span>
         ) : (
-          <>
-            <div style={{ height: "500px" }}>
-              {data.length !== 0
-                ? data.map((book: any, index: number) => (
-                    <h1 key={index} style={{ color: "white" }}>
-                      {book.bookName}
-                    </h1>
-                  ))
-                : "Data is empty"}
-            </div>
+          <div className="flex flex-wrap gap-12 justify-evenly">
+            {data.map((book: any, index: number) => (
+              <div
+                className="flex flex-col gap-2 justify-center items-center w-1/6 h-64 border-2 border-black"
+                key={"book_" + index}
+              >
+                <h1 className="text-2xl text-balck"> {book.bookName} </h1>
+                <h1 className="text-xl text-balck"> {book.bookAuthor} </h1>
+                <h1> {book.bookPrice}$ </h1>
+                <button
+                  onClick={() => {
+                    navigate({
+                      to: "/books/$bookId",
+                      params: { bookId: book.id },
+                    });
+                  }}
+                >
+                  {" "}
+                  Edit a book{" "}
+                </button>
+              </div>
+            ))}
             <div>{isFetching ? "Background Updating..." : " "}</div>
-          </>
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

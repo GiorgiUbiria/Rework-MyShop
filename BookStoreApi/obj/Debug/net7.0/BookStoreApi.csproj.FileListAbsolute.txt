@@ -277,3 +277,6 @@ D:\WorkFlow\Book-Store\BookStoreApi\obj\Debug\net7.0\refint\BookStoreApi.dll
 D:\WorkFlow\Book-Store\BookStoreApi\obj\Debug\net7.0\BookStoreApi.pdb
 D:\WorkFlow\Book-Store\BookStoreApi\obj\Debug\net7.0\BookStoreApi.genruntimeconfig.cache
 D:\WorkFlow\Book-Store\BookStoreApi\obj\Debug\net7.0\ref\BookStoreApi.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll

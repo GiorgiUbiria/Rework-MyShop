@@ -1,6 +1,10 @@
-
 const Home = () => {
-  return <div className="text-center text-white text-2xl">Home</div>;
+  return (
+    <div>
+      <h1>Hi</h1>
+      <h2>HEYE</h2>
+    </div>
+  );
 };
 
 export default Home;
