@@ -48,26 +48,33 @@ namespace BookStoreApi.Controllers
             return book;
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchBook(long id, [FromBody] JsonPatchDocument<Book> patchDoc)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PatchBook([FromForm] Book book)
         {
-            if (patchDoc == null)
+            if (_context.Books == null)
             {
-                return BadRequest();
+                return Problem("Entity set 'BookContext.Books'  is null.");
             }
 
-            var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
 
-            patchDoc.ApplyTo(book, ModelState);
-
-            if (!ModelState.IsValid)
+            if (book.BookImage != null && book.BookImage.Length > 0)
             {
-                return BadRequest(ModelState);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(book.BookImage.FileName);
+                var filePath = Path.Combine("uploads", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await book.BookImage.CopyToAsync(stream);
+                }
+
+                book.BookImagePath = filePath;
             }
+
+            _context.Entry(book).State = EntityState.Modified;
 
             try
             {
@@ -75,7 +82,7 @@ namespace BookStoreApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(id))
+                if (!BookExists(book.Id))
                 {
                     return NotFound();
                 }
@@ -111,7 +118,6 @@ namespace BookStoreApi.Controllers
             }
 
             book.IsAvailable = true;
-            book.BookCreationDate = DateTime.Today;
             book.BookQuantity = 1;
 
             var existingBook = await _context.Books
@@ -129,6 +135,7 @@ namespace BookStoreApi.Controllers
 
             return CreatedAtAction("GetBook", new { id = book.Id }, book);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(long id)

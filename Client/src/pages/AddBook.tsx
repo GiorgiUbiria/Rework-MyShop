@@ -32,6 +32,19 @@ const schema = z
         { message: "Book price must be a valid number" }
       )
       .transform((val) => Number(val)),
+    bookCreationYear: z
+      .string({
+        required_error: "Book creation year is required",
+        invalid_type_error: "Book creation year must be a number",
+      })
+      .refine(
+        (val) => {
+          const num = Number(val);
+          return !isNaN(num) && num >= 0;
+        },
+        { message: "Book price must be a valid number" }
+      )
+      .transform((val) => Number(val)),
     bookAuthor: z
       .string({
         required_error: "Book author's name is required",
@@ -65,6 +78,7 @@ const AddBook = () => {
     const formData = new FormData();
     formData.append("bookName", data.bookName);
     formData.append("bookAuthor", data.bookAuthor);
+    formData.append("bookCreationYear", data.bookCreationYear);
     formData.append("bookPrice", data.bookPrice);
     formData.append("bookImage", data.bookImage[0]);
 
@@ -88,6 +102,13 @@ const AddBook = () => {
         {errors.bookAuthor?.message && <p>{errors.bookAuthor?.message}</p>}
         <Input {...register("bookPrice")} className="border border-black" />
         {errors.bookPrice?.message && <p>{errors.bookPrice?.message}</p>}
+        <Input
+          {...register("bookCreationYear")}
+          className="border border-black"
+        />
+        {errors.bookCreationYear?.message && (
+          <p>{errors.bookCreationYear?.message}</p>
+        )}
         <Input
           {...register("bookImage")}
           type="file"

@@ -9,7 +9,7 @@ public class Book
     public decimal BookPrice { get; set; }
     public int? BookQuantity { get; set; }
     public bool? IsAvailable { get; set; }
-    public DateTime? BookCreationDate { get; set; }
+    public int BookCreationYear { get; set; }
     [NotMapped]
     public IFormFile? BookImage { get; set; }
     public string? BookImagePath { get; set; }
