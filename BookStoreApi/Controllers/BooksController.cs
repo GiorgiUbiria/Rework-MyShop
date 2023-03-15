@@ -90,12 +90,29 @@ namespace BookStoreApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook([FromBody] Book book)
+        public async Task<ActionResult<Book>> PostBook([FromForm] Book book)
         {
             if (_context.Books == null)
             {
                 return Problem("Entity set 'BookContext.Books'  is null.");
             }
+
+            if (book.BookImage != null && book.BookImage.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(book.BookImage.FileName);
+                var filePath = Path.Combine("uploads", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await book.BookImage.CopyToAsync(stream);
+                }
+
+                book.BookImagePath = filePath;
+            }
+
+            book.IsAvailable = true;
+            book.BookCreationDate = DateTime.Today;
+            book.BookQuantity = 1;
 
             var existingBook = await _context.Books
                 .FirstOrDefaultAsync(b => b.BookName == book.BookName && b.BookAuthor == book.BookAuthor);
@@ -106,11 +123,6 @@ namespace BookStoreApi.Controllers
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetBook", new { id = existingBook.Id }, existingBook);
             }
-
-            book.BookQuantity = 1;
-            book.Id = _context.Books.Count() + 1;
-            book.IsAvailable = true;
-            book.BookCreationDate = DateTime.Today;
 
             _context.Books.Add(book);
             await _context.SaveChangesAsync();

@@ -1,5 +1,6 @@
 using BookStoreApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,13 @@ app.UseCors();
 
 app.UseDefaultFiles();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
+    RequestPath = "/uploads"
+});
+
 
 app.UseHttpsRedirection();
 

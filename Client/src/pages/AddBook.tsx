@@ -3,6 +3,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
 const schema = z
   .object({
     bookName: z
@@ -30,6 +38,15 @@ const schema = z
         invalid_type_error: "Book author's name must be a string",
       })
       .min(3, { message: "Must be 3 or more characters long" }),
+    bookImage: z
+      .any()
+      .refine(
+        (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+        `Max image size is 5MB.`
+      )
+      .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), {
+        message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+      }),
   })
   .required();
 
@@ -45,12 +62,15 @@ const AddBook = () => {
   });
 
   const onSubmit = async (data: any) => {
+    const formData = new FormData();
+    formData.append("bookName", data.bookName);
+    formData.append("bookAuthor", data.bookAuthor);
+    formData.append("bookPrice", data.bookPrice);
+    formData.append("bookImage", data.bookImage[0]);
+
     await fetch("http://localhost:5179/api/books", {
       method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "content-type": "application/json",
-      },
+      body: formData,
     });
     console.log(data);
   };
@@ -68,6 +88,12 @@ const AddBook = () => {
         {errors.bookAuthor?.message && <p>{errors.bookAuthor?.message}</p>}
         <Input {...register("bookPrice")} className="border border-black" />
         {errors.bookPrice?.message && <p>{errors.bookPrice?.message}</p>}
+        <Input
+          {...register("bookImage")}
+          type="file"
+          className="border border-black"
+        />
+
         <button
           type="submit"
           className="w-1/3 hover:scale-105 bg-black text-white"

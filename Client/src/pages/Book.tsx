@@ -91,17 +91,17 @@ const Book = () => {
       {
         path: "/bookName",
         op: "replace",
-        value: "aFrikca2",
+        value: data.bookName,
       },
       {
         path: "/bookAuthor",
         op: "replace",
-        value: "aFrikceli",
+        value: data.bookAuthor,
       },
       {
         path: "/bookPrice",
         op: "replace",
-        value: 25,
+        value: data.bookPrice,
       },
     ];
 
