@@ -42,7 +42,6 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads"
 });
 
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -63,7 +63,17 @@ namespace BookStoreApi.Controllers
 
             if (book.BookImage != null && book.BookImage.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(book.BookImage.FileName);
+                if (!string.IsNullOrEmpty(book.BookImagePath))
+                {
+                    var previousImagePath = Path.Combine("uploads", Path.GetFileName(book.BookImagePath));
+                    var fullPath = Path.Combine(Directory.GetCurrentDirectory(), previousImagePath);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                }
+
+                var fileName = book.Id.ToString() + Path.GetExtension(book.BookImage.FileName);
                 var filePath = Path.Combine("uploads", fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -106,7 +116,7 @@ namespace BookStoreApi.Controllers
 
             if (book.BookImage != null && book.BookImage.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(book.BookImage.FileName);
+                var fileName = book.Id.ToString() + Path.GetExtension(book.BookImage.FileName);
                 var filePath = Path.Combine("uploads", fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -149,6 +159,17 @@ namespace BookStoreApi.Controllers
             {
                 return NotFound();
             }
+
+            if (!string.IsNullOrEmpty(book.BookImagePath))
+            {
+                var previousImagePath = Path.Combine("uploads", Path.GetFileName(book.BookImagePath));
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), previousImagePath);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+
 
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
