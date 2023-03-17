@@ -1,4 +1,5 @@
 import { Input } from "@mui/material";
+import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -74,6 +75,8 @@ const AddBook = () => {
     resolver: zodResolver(schema),
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: any) => {
     const formData = new FormData();
     formData.append("bookName", data.bookName);
@@ -82,11 +85,13 @@ const AddBook = () => {
     formData.append("bookPrice", data.bookPrice);
     formData.append("bookImage", data.bookImage[0]);
 
-    await fetch("http://localhost:5179/api/books", {
+    const response = await fetch("http://localhost:5179/api/books", {
       method: "POST",
       body: formData,
     });
     console.log(data);
+
+    response.ok && navigate({ to: "/books" });
   };
 
   return (

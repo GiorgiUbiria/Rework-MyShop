@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useNavigate } from "@tanstack/react-router";
 import { Input } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -99,6 +99,16 @@ const Book = () => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => {
+      return fetch(`http://localhost:5179/api/books/${params.bookId}`, {
+        method: "DELETE",
+      });
+    },
+  });
+
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -184,6 +194,18 @@ const Book = () => {
                   Save Changes
                 </button>
               </form>
+              <button
+                className="w-1/3 hover:scale-105 bg-black text-white"
+                onClick={() => {
+                  deleteMutation.mutate();
+                  navigate({
+                    to: "/books",
+                  });
+                }}
+              >
+                {" "}
+                Delete Book
+              </button>
             </div>
 
             <div>{isFetching ? "Background Updating..." : " "}</div>

@@ -114,21 +114,10 @@ namespace BookStoreApi.Controllers
                 return Problem("Entity set 'BookContext.Books'  is null.");
             }
 
-            if (book.BookImage != null && book.BookImage.Length > 0)
+            if (book == null)
             {
-                var fileName = book.Id.ToString() + Path.GetExtension(book.BookImage.FileName);
-                var filePath = Path.Combine("uploads", fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await book.BookImage.CopyToAsync(stream);
-                }
-
-                book.BookImagePath = filePath;
+                return NotFound();
             }
-
-            book.IsAvailable = true;
-            book.BookQuantity = 1;
 
             var existingBook = await _context.Books
                 .FirstOrDefaultAsync(b => b.BookName == book.BookName && b.BookAuthor == book.BookAuthor);
@@ -139,13 +128,43 @@ namespace BookStoreApi.Controllers
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetBook", new { id = existingBook.Id }, existingBook);
             }
+            else
+            {
+                // Generate a unique Id for the book
+                var newBook = new Book()
+                {
+                    BookName = book.BookName,
+                    BookAuthor = book.BookAuthor,
+                    BookPrice = book.BookPrice,
+                    BookQuantity = 1,
+                    IsAvailable = true,
+                    BookCreationYear = book.BookCreationYear
+                };
 
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+                // Add the book to the context so that it gets an Id
+                _context.Books.Add(newBook);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
+                if (book.BookImage != null && book.BookImage.Length > 0)
+                {
+                    // Get the Id of the new book
+                    var newBookId = newBook.Id;
+
+                    var fileName = newBookId.ToString() + Path.GetExtension(book.BookImage.FileName);
+                    var filePath = Path.Combine("uploads", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await book.BookImage.CopyToAsync(stream);
+                    }
+
+                    newBook.BookImagePath = filePath;
+                    await _context.SaveChangesAsync();
+                }
+
+                return CreatedAtAction("GetBook", new { id = newBook.Id }, newBook);
+            }
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(long id)
