@@ -6,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-builder.Services.AddDbContext<BookContext>(opt => opt.UseInMemoryDatabase("BookStore"));
+builder.Services.AddDbContext<BookContext>(
+    options => options.UseMySQL(
+        "server=127.0.0.1;database=BookStore;user=Emiya;password=AmerigoVespuchi2@"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

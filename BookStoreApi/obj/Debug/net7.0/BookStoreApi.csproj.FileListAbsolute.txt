@@ -280,3 +280,16 @@ D:\WorkFlow\Book-Store\BookStoreApi\obj\Debug\net7.0\ref\BookStoreApi.dll
 D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
 D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\Google.Protobuf.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\K4os.Compression.LZ4.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\K4os.Compression.LZ4.Streams.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\K4os.Hash.xxHash.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\MySql.Data.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\ZstdNet.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\comerr64.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\gssapi64.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\k5sprt64.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\krb5_64.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\krbcc64.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\MySql.EntityFrameworkCore.dll
+D:\WorkFlow\Book-Store\BookStoreApi\bin\Debug\net7.0\BouncyCastle.Crypto.dll
